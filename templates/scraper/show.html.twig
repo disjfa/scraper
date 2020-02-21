@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ scrape.url }}
+{% endblock %}
+
+{% block body %}
+    <div class="bg-light">
+        <div class="container py-3">
+            <h1>{{ scrape.url }} ({{ scrape.urls | length }})</h1>
+            <div class="d-flex flex-column flex-lg-row">
+                <div style="flex: 1">
+                    <h3>Indexed</h3>
+                    <canvas id="chart-indexed"></canvas>
+                </div>
+                <div style="flex: 1">
+                    <h3>Status code</h3>
+                    <canvas id="chart-status-code"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container py-3">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Indexed</th>
+                    <th>Statuscode</th>
+                    <th>Url</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for url in scrape.urls %}
+                    <tr>
+                        <td>{{ url.indexed }}</td>
+                        <td>{{ url.statusCode }}</td>
+                        <td>
+                            <a href="{{ url.url }}" target="_blank">{{ url.url }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+    var indexed = document.getElementById('chart-indexed');
+    var indexedChart = new Chart(indexed, {
+      type: 'pie',
+      data: {
+        datasets: [{
+          label: 'Indexed',
+          data: [{{ scrape.indexed.data | join(',') }}],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+        }],
+        labels: ['{{ scrape.indexed.labels | join("','") | raw }}'],
+      }
+    });
+    var statusCode = document.getElementById('chart-status-code');
+    var statusCodeChart = new Chart(statusCode, {
+      type: 'pie',
+      data: {
+        datasets: [{
+          label: 'Statuscodes',
+          data: [{{ scrape.statusCodes.data | join(',') }}],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+        }],
+        labels: ['{{ scrape.statusCodes.labels | join("','") | raw }}'],
+      }
+    });
+    </script>
+{% endblock %}

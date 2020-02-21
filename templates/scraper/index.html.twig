@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Scraper
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="py-3">
+            <a href="{{ path('app_scrape_create') }}" class="btn btn-primary">+ Scrape a new url</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Url</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for scrape in scrapes %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_scrape_show', {'scrape': scrape.id}) }}">
+                                {{ scrape.url }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ scrape.createdAt | date }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
