@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Scrape;
+use App\Entity\ScrapeUrl;
 use App\Form\ScrapeFormType;
 use App\Repository\ScrapeRepository;
 use App\Service\ProcessorService;
@@ -35,6 +36,30 @@ class ScraperController extends AbstractController
     {
         return $this->render('scraper/show.html.twig', [
             'scrape' => $scrape,
+        ]);
+    }
+
+    /**
+     * @Route("/scrape/{scrape}/reset", name="app_scrape_reset")
+     * @param Scrape $scrape
+     * @param EntityManagerInterface $entityManager
+     * @param ProcessorService $processorService
+     * @return Response
+     */
+    public function reset(Scrape $scrape, EntityManagerInterface $entityManager, ProcessorService $processorService)
+    {
+        foreach ($scrape->getUrls() as $scrapeUrl) {
+            $entityManager->remove($scrapeUrl);
+        }
+        $entityManager->flush();
+
+        $scrapeUrl = new ScrapeUrl($scrape, $scrape->getUrl());
+        $entityManager->persist($scrapeUrl);
+        $entityManager->flush();
+        $processorService->handle($scrapeUrl);
+
+        return $this->redirectToRoute('app_scrape_show', [
+            'scrape' => $scrape->getId(),
         ]);
     }
 

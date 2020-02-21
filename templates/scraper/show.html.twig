@@ -5,9 +5,23 @@
 {% endblock %}
 
 {% block body %}
+    <div class="container py-3">
+        <h1>{{ scrape.url }} ({{ scrape.urls | length }})</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('app_scrape_index') }}">Index</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Scrape</li>
+            </ol>
+        </nav>
+        <p>
+            <a href="{{ scrape.url }}" class="btn btn-outline-primary">view</a>
+            <a href="{{ path('app_scrape_reset', {'scrape': scrape.id}) }}" class="btn btn-outline-primary">reset</a>
+        </p>
+    </div>
     <div class="bg-light">
         <div class="container py-3">
-            <h1>{{ scrape.url }} ({{ scrape.urls | length }})</h1>
             <div class="d-flex flex-column flex-lg-row">
                 <div style="flex: 1">
                     <h3>Indexed</h3>
@@ -27,6 +41,7 @@
                 <tr>
                     <th>Indexed</th>
                     <th>Statuscode</th>
+                    <th>Actions</th>
                     <th>Url</th>
                 </tr>
                 </thead>
@@ -35,6 +50,11 @@
                     <tr>
                         <td>{{ url.indexed }}</td>
                         <td>{{ url.statusCode }}</td>
+                        <td>
+                            <a href="{{ path('scrape_url_show', {'scrapeUrl': url.id}) }}">
+                                details
+                            </a>
+                        </td>
                         <td>
                             <a href="{{ url.url }}" target="_blank">{{ url.url }}</a>
                         </td>

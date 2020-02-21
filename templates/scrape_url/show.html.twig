@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Hello ScrapeUrlController!
+{% endblock %}
+
+{% block body %}
+    <div class="container py-3">
+        <h1>{{ scrapeUrl.url }}</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('app_scrape_index') }}">Index</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('app_scrape_show', {'scrape': scrapeUrl.scrape.id}) }}">Scrape</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Details</li>
+            </ol>
+        </nav>
+        <p>
+            <a href="{{ scrapeUrl.url }}" class="btn btn-outline-primary">view</a>
+            <a href="{{ path('scrape_url_scrape', {'scrapeUrl': scrapeUrl.id}) }}" class="btn btn-outline-primary">scrape</a>
+        </p>
+        <table class="table table-sm">
+            <tr>
+                <td>title</td>
+                <td>{{ scrapeUrl.title | default('none') }}</td>
+            </tr>
+            <tr>
+                <td>canonical</td>
+                <td>{{ scrapeUrl.canonical | default('none') }}</td>
+            </tr>
+            <tr>
+                <td>og:type</td>
+                <td>{{ scrapeUrl.ogType | default('none') }}</td>
+            </tr>
+            <tr>
+                <td>og:url</td>
+                <td>{{ scrapeUrl.ogUrl | default('none') }}</td>
+            </tr>
+        </table>
+        {% if scrapeUrl.ogUrl %}
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <a href="{{ scrapeUrl.ogUrl }}" class="card">
+                        {% if scrapeUrl.ogImage %}
+                            <img src="{{ scrapeUrl.ogImage }}" class="card-img-top" alt="{{ scrapeUrl.ogTitle }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ scrapeUrl.ogTitle }}</h5>
+                            <p class="card-text">{{ scrapeUrl.ogDescription }}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+        <h3>Content</h3>
+        {{ scrapeUrl.content }}
+    </div>
+{% endblock %}
