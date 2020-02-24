@@ -89,12 +89,20 @@ class ScrapeUrl implements EnqueueTraitInterface
      * @ORM\Column(type="text", nullable=true)
      */
     private $canonical;
+    /**
+     * @var ScrapeUrl|null
+     * @ORM\ManyToOne(targetEntity="ScrapeUrl")
+     */
+    private $foundOn;
 
-    public function __construct(Scrape $scrape, string $url)
+    public function __construct(Scrape $scrape, string $url, ScrapeUrl $foundOn = null)
     {
         $this->indexed = false;
         $this->scrape = $scrape;
         $this->url = $url;
+        if ($foundOn) {
+            $this->foundOn = $foundOn;
+        }
     }
 
     public function getId(): ?UuidInterface
@@ -281,5 +289,13 @@ class ScrapeUrl implements EnqueueTraitInterface
     public function setCanonical(?string $canonical): void
     {
         $this->canonical = $canonical;
+    }
+
+    /**
+     * @return ScrapeUrl|null
+     */
+    public function getFoundOn(): ?ScrapeUrl
+    {
+        return $this->foundOn;
     }
 }

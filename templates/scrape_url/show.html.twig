@@ -29,7 +29,11 @@
             </tr>
             <tr>
                 <td>canonical</td>
-                <td>{{ scrapeUrl.canonical | default('none') }}</td>
+                <td>
+                    <a href="{{ scrapeUrl.canonical | default('#') }}" target="_blank">
+                        {{ scrapeUrl.canonical | default('none') }}
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>og:type</td>
@@ -39,6 +43,16 @@
                 <td>og:url</td>
                 <td>{{ scrapeUrl.ogUrl | default('none') }}</td>
             </tr>
+            {% if scrapeUrl.foundOn %}
+                <tr>
+                    <td>Found on</td>
+                    <td>
+                        <a href="{{ path('scrape_url_show', {'scrapeUrl': scrapeUrl.foundOn.id}) }}">
+                            {{ scrapeUrl.foundOn.url }}
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
         </table>
         {% if scrapeUrl.ogUrl %}
             <div class="row justify-content-center">

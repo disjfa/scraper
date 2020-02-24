@@ -185,16 +185,16 @@ class ScrapeService
 
         $links = $crawler->filter('a');
         foreach ($links as $link) {
-            $this->checkLink($link, $uri, $scrapeUrl->getScrape());
+            $this->checkLink($link, $uri, $scrapeUrl);
         }
     }
 
     /**
      * @param DOMElement $link
      * @param Uri $uri
-     * @param Scrape $scrape
+     * @param ScrapeUrl $scrapeUrl
      */
-    public function checkLink(DOMElement $link, Uri $uri, Scrape $scrape)
+    public function checkLink(DOMElement $link, Uri $uri, ScrapeUrl $scrapeUrl)
     {
         if (false === $link->hasAttribute('href')) {
             return;
@@ -207,18 +207,20 @@ class ScrapeService
         if (empty($href->getScheme())) {
             $href = $href->withScheme($uri->getScheme());
         }
-
         if ($href->getHost() !== $uri->getHost()) {
             return;
         }
+        // strip # internal links
+        $href = $href->withFragment('');
 
+        $scrape = $scrapeUrl->getScrape();
         $indexed = $this->scrapeUrlRepository->findByUrl($scrape, $href);
 
         if (count($indexed)) {
             return;
         }
 
-        $scrapeUrl = new ScrapeUrl($scrape, $href);
+        $scrapeUrl = new ScrapeUrl($scrape, $href, $scrapeUrl);
         $this->entityManager->persist($scrapeUrl);
         $this->entityManager->flush();
 
